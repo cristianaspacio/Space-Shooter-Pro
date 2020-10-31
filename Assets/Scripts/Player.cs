@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     //every variable has a name
     //optional value assigned
     [SerializeField]
-    private float _speed = 3.5f;
+    private float _speed = 5.0f;
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         CalculateMovement();
 
         if(Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
@@ -81,9 +82,20 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            transform.Translate(direction * _speed * 2 * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);
+        }
+        
+        
+        
+
 
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0));
 
@@ -158,7 +170,7 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         _isSpeedBoostActive = true;
-        _speed = 8.5f;
+        _speed *= 2;
         StartCoroutine(SpeedBoostPowerDown());
     }
 
