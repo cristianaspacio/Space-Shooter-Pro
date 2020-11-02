@@ -28,7 +28,9 @@ public class Player : MonoBehaviour
     private bool _isShieldActive = false;
 
     [SerializeField]
-    private GameObject shield;
+    private GameObject _shield;
+    private SpriteRenderer _shieldSpriteRenderer;
+    private int _shieldStrength;
 
     [SerializeField]
     private int _score;
@@ -50,6 +52,11 @@ public class Player : MonoBehaviour
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
+        _shieldSpriteRenderer = _shield.GetComponent<SpriteRenderer>();
+        if(_shieldSpriteRenderer == null)
+        {
+            Debug.LogError("Shield is NULL.");
+        }
         if(_audioSource == null)
         {
             Debug.LogError("The Audio Source is NULL.");
@@ -129,8 +136,7 @@ public class Player : MonoBehaviour
     {
         if(_isShieldActive == true)
         {
-            _isShieldActive = false;
-            shield.SetActive(false);
+            DamageShield();
             return;
         }
         _lives--;
@@ -138,6 +144,7 @@ public class Player : MonoBehaviour
         if(_lives == 2)
         {
             _rightEngine.SetActive(true);
+            
         }
         else if (_lives == 1)
         {
@@ -183,8 +190,10 @@ public class Player : MonoBehaviour
 
     public void ShieldActive()
     {
+        _shieldSpriteRenderer.color = Color.white;
         _isShieldActive = true;
-        shield.SetActive(true);
+        _shield.SetActive(true);
+        _shieldStrength = 3;
     }
 
     public void AddScore(int points)
@@ -199,6 +208,26 @@ public class Player : MonoBehaviour
         {
             Destroy(collision.gameObject);
             Damage();
+        }
+    }
+
+    private void DamageShield()
+    {
+        _shieldStrength--;
+        switch (_shieldStrength)
+        {
+            case 2:
+                _shieldSpriteRenderer.color = Color.yellow;
+                break;
+            case 1:
+                _shieldSpriteRenderer.color = Color.red;
+                break;
+            case 0:
+                _isShieldActive = false;
+                _shield.SetActive(false);
+                break;
+            default:
+                break;
         }
     }
 }

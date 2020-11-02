@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     private Player _player;
     [SerializeField]
     private GameObject _laserPrefab;
+    private bool _canShootLaser;
     // Start is called before the first frame update
 
     private Animator _anim;
@@ -20,7 +21,7 @@ public class Enemy : MonoBehaviour
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
         _audioSource = GetComponent<AudioSource>();
-        
+        _canShootLaser = true;
         if(_audioSource == null)
         {
             Debug.LogError("Audio Source is NULL.");
@@ -41,18 +42,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.time >_canFire)
-        {
-            _fireRate = Random.Range(3f, 7f);
-            _canFire = Time.time + _fireRate;
-            GameObject enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
-            Laser[] lasers= enemyLaser.GetComponentsInChildren<Laser>();
-            for(int i = 0; i < 2; i++)
-            {
-                lasers[i].AssignEnemyLaser();
-                
-            }
-        }
+        ShootLaser();
         CalculateMovement();
     }
 
@@ -81,6 +71,8 @@ public class Enemy : MonoBehaviour
             _anim.SetTrigger("OnEnemyDeath");
             _audioSource.Play();
             _speed = 0f;
+            _canShootLaser = false;
+            Destroy(this.GetComponent<BoxCollider2D>());
             Destroy(this.gameObject, 2.8f);
 
         }
@@ -96,10 +88,25 @@ public class Enemy : MonoBehaviour
             _audioSource.Play();
             _speed = 0f;
             Destroy(this.GetComponent<BoxCollider2D>());
+            _canShootLaser = false;
             Destroy(this.gameObject, 2.8f);
         }
     }
 
-    
+    private void ShootLaser()
+    {
+        if (Time.time > _canFire && _canShootLaser)
+        {
+            _fireRate = Random.Range(3f, 7f);
+            _canFire = Time.time + _fireRate;
+            GameObject enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+            for (int i = 0; i < 2; i++)
+            {
+                lasers[i].AssignEnemyLaser();
+
+            }
+        }
+    }
 
 }
