@@ -203,6 +203,12 @@ public class Player : MonoBehaviour
         _shieldStrength = 3;
     }
 
+    public void RefillAmmo()
+    {
+        _ammoCount = 15;
+        _uiManager.ChangeAmmo(_ammoCount);
+    }
+
     public void AddScore(int points)
     {
         _score += points;
