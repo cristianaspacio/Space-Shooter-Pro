@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _scoreText;
     [SerializeField]
+    private Text _ammoText;
+    [SerializeField]
     private Image _livesImg;
     [SerializeField]
     private Sprite[] _liveSprites;
@@ -23,6 +25,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreText.text = "Score: " + 0;
+        _ammoText.text = "Ammo: " + 15;
         _gameOverText.SetActive(false);
         _restartText.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
@@ -36,6 +39,11 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ChangeAmmo(int ammo)
+    {
+        _ammoText.text = "Ammo: " + ammo;
     }
 
     public void ChangeScore(int score)

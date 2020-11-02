@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     private float _fireRate = 0.5f;
     private float _canFire = -1.0f;
     [SerializeField]
+    private int _ammoCount = 15;
+    [SerializeField]
     private int _lives = 3;
     private SpawnManager _spawnManager;
     [SerializeField]
@@ -120,16 +122,21 @@ public class Player : MonoBehaviour
     {
         _canFire = Time.time + _fireRate;
 
-        if (_isTripleShotActive == true)
+        if (_isTripleShotActive == true && _ammoCount > 0)
         {
+            _ammoCount--;
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            _audioSource.Play();
+            _uiManager.ChangeAmmo(_ammoCount);
         }
-        else
+        else if(_ammoCount > 0)
         {
+            _ammoCount--;
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+            _audioSource.Play();
+            _uiManager.ChangeAmmo(_ammoCount);
         }
-
-       _audioSource.Play();
+       
     }
 
     public void Damage()
