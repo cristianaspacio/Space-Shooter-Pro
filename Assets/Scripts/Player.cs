@@ -243,4 +243,24 @@ public class Player : MonoBehaviour
                 break;
         }
     }
+
+    public void HealthPickUp()
+    {
+        if(_lives < 3)
+        {
+            _lives++;
+            switch(_lives)
+            {
+                case 2:
+                    _leftEngine.SetActive(false);
+                    break;
+                case 3:
+                    _rightEngine.SetActive(false);
+                    break;
+                default:
+                    break;
+            }
+            _uiManager.UpdatesLives(_lives);
+        }
+    }
 }
