@@ -25,6 +25,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _tripleShotPrefab;
     [SerializeField]
+    private bool _isMultiDirectionalShotActive = false;
+    [SerializeField]
+    GameObject[] _multiDirectionalLasers;
+    [SerializeField]
     private bool _isSpeedBoostActive = false;
     [SerializeField]
     private bool _isShieldActive = false;
@@ -129,6 +133,22 @@ public class Player : MonoBehaviour
             _audioSource.Play();
             _uiManager.ChangeAmmo(_ammoCount);
         }
+        else if(_isMultiDirectionalShotActive && _ammoCount > 0)
+        {
+            _ammoCount--;
+
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+            Instantiate(_laserPrefab, transform.position + new Vector3(-1.05f, 1.05f, 0), Quaternion.Euler(new Vector3(0, 0, 45)));
+            Instantiate(_laserPrefab, transform.position + new Vector3(-1.05f, 0, 0), Quaternion.Euler(new Vector3(0, 0, 90)));
+            Instantiate(_laserPrefab, transform.position + new Vector3(-1.05f, -1.05f, 0), Quaternion.Euler(new Vector3(0, 0, 135)));
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, -1.05f, 0), Quaternion.Euler(new Vector3(0, 0, 180)));
+            Instantiate(_laserPrefab, transform.position + new Vector3(1.05f, -1.05f, 0), Quaternion.Euler(new Vector3(0, 0, 225)));
+            Instantiate(_laserPrefab, transform.position + new Vector3(1.05f, 0, 0), Quaternion.Euler(new Vector3(0, 0, 270)));
+            Instantiate(_laserPrefab, transform.position + new Vector3(1.05f, 1.05f, 0), Quaternion.Euler(new Vector3(0, 0, 315)));
+
+            _audioSource.Play();
+            _uiManager.ChangeAmmo(_ammoCount);
+        }
         else if(_ammoCount > 0)
         {
             _ammoCount--;
@@ -177,7 +197,7 @@ public class Player : MonoBehaviour
 
     IEnumerator TripleShotPowerDown()
     {
-         yield return new WaitForSeconds(5.0f);
+         yield return new WaitForSeconds(8.0f);
          _isTripleShotActive = false;
     }
 
@@ -190,7 +210,7 @@ public class Player : MonoBehaviour
 
     IEnumerator SpeedBoostPowerDown()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(8.0f);
         _isSpeedBoostActive = false;
         _speed = 5.0f;
     }
@@ -262,5 +282,18 @@ public class Player : MonoBehaviour
             }
             _uiManager.UpdatesLives(_lives);
         }
+    }
+
+    public void MultiShotActive()
+    {
+        _isMultiDirectionalShotActive = true;
+        _isTripleShotActive = false;
+        StartCoroutine(MultiShotPowerDown());
+    }
+
+    IEnumerator MultiShotPowerDown()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _isMultiDirectionalShotActive = false;
     }
 }

@@ -835,6 +835,12 @@ MonoBehaviour:
   _isTripleShotActive: 0
   _tripleShotPrefab: {fileID: 3050856385042860726, guid: ac8766c2a592d8e468a4e6b2112f13b6,
     type: 3}
+  _isMultiDirectionalShotActive: 0
+  _multiDirectionalLasers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _isSpeedBoostActive: 0
   _isShieldActive: 0
   _shield: {fileID: 1505586678}
@@ -1311,6 +1317,8 @@ MonoBehaviour:
   - {fileID: 7941475672239124585, guid: addee60a5e21bd04cbd3130148f31c54, type: 3}
   - {fileID: 7333305274037634726, guid: 1490bc24c34888f4da65db150f8eeffc, type: 3}
   - {fileID: 2103840923773303147, guid: d8a0e85dc26c758488e7727c35ea4ffb, type: 3}
+  - {fileID: 3704161630455559126, guid: 3fd599d41da0af849b127c4084264987, type: 3}
+  - {fileID: 4493376883797365255, guid: 965b75d82c1b33a4faf44a4c92439b98, type: 3}
 --- !u!4 &1455373078
 Transform:
   m_ObjectHideFlags: 0

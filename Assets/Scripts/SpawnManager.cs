@@ -49,8 +49,15 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false) 
         {
             Vector3 spawnPoint = new Vector3(Random.Range(-9.0f, 9.0f), 8, 0);
-            int randomPowerup = Random.Range(0, 5);
-            Instantiate(_powerups[randomPowerup], spawnPoint, Quaternion.identity);
+            if(Random.value > 0.8f)
+            {
+                Instantiate(_powerups[5], spawnPoint, Quaternion.identity);
+            }
+            else
+            {
+                int randomPowerup = Random.Range(0, 5);
+                Instantiate(_powerups[randomPowerup], spawnPoint, Quaternion.identity);
+            }
             yield return new WaitForSeconds(Random.Range(3.0f, 7.0f));
         }
         
