@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject _laserPrefab;
     private bool _canShootLaser;
+    private bool _moveRight = true;
     // Start is called before the first frame update
 
     private Animator _anim;
@@ -48,9 +49,28 @@ public class Enemy : MonoBehaviour
 
     private void CalculateMovement()
     {
+        if(_moveRight)
+        {
+            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        }
+
         //move down 4 meters per second
+        if(transform.position.x <= -9.0f)
+        {
+            _moveRight = true;
+        }
+        else if(transform.position.x >= 9.0f)
+        {
+            _moveRight = false;
+        }
+
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
         //if bottom of screen respawn at top at a new random x position
+
         if (transform.position.y <= -6.0f)
         {
             float randomX = Random.Range(-9.0f, 9.0f);
