@@ -54,7 +54,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _thrusterCoolDown = 0.0f;
 
-
+    private float _shakeMagnitude = 0.05f;
+    private float _shakeTime = 0.5f;
+    [SerializeField]
+    private Camera _mainCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -188,6 +191,7 @@ public class Player : MonoBehaviour
             DamageShield();
             return;
         }
+        StartCoroutine(CameraShake());
         _lives--;
 
         if(_lives == 2)
@@ -328,5 +332,23 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
         _isThrusterActive = true;
+    }
+
+    IEnumerator CameraShake()
+    {
+        Vector3 initialPosition = _mainCamera.transform.position;
+        float elapsed = 0.0f;
+        while(elapsed < _shakeTime)
+        {
+            float x = Random.value * _shakeMagnitude * 2 - _shakeMagnitude;
+            float y = Random.value * _shakeMagnitude * 2 - _shakeMagnitude;
+            Vector3 temp = _mainCamera.transform.position;
+            temp.x += x;
+            temp.y += y;
+            _mainCamera.transform.position = temp;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        _mainCamera.transform.position = initialPosition;
     }
 }
