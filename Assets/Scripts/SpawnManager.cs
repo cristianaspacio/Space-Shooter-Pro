@@ -10,6 +10,7 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] _powerups;
+    private int _waveNumber = 1;
 
     private bool _stopSpawning = false;
     // Start is called before the first frame update
@@ -20,6 +21,7 @@ public class SpawnManager : MonoBehaviour
 
     public void StartSpawning()
     {
+        StartCoroutine(WaveSystem());
         StartCoroutine(SpawnEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
     }
@@ -35,9 +37,12 @@ public class SpawnManager : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         while(_stopSpawning == false)
         {
-            float randomX = Random.Range(-9.0f, 9.0f);
-            GameObject newEnemy = Instantiate(_enemyPrefab, new Vector3(randomX, 8, 0),  Quaternion.identity);
-            newEnemy.transform.parent = _enemyContainer.transform;
+            for(int i = 0; i < _waveNumber; i++)
+            {
+                float randomX = Random.Range(-9.0f, 9.0f);
+                GameObject newEnemy = Instantiate(_enemyPrefab, new Vector3(randomX, 8, 0), Quaternion.identity);
+                newEnemy.transform.parent = _enemyContainer.transform;
+            }
             yield return new WaitForSeconds(5.0f);
 
         }
@@ -66,5 +71,14 @@ public class SpawnManager : MonoBehaviour
     public void OnPlayerDeath()
     {
         _stopSpawning = true;
+    }
+
+    IEnumerator WaveSystem()
+    {
+        while(_stopSpawning == false)
+        {
+            yield return new WaitForSeconds(20.0f);
+            _waveNumber++;
+        }
     }
 }
