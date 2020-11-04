@@ -50,6 +50,10 @@ public class Player : MonoBehaviour
     private AudioClip _explosionSound;
     private AudioSource _audioSource;
 
+    private bool _isThrusterActive = true;
+    [SerializeField]
+    private float _thrusterCoolDown = 0.0f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -83,7 +87,22 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(_thrusterCoolDown >= 100f && _isThrusterActive)
+        {
+            _isThrusterActive = false;
+            _thrusterCoolDown = 100f;
+            StartCoroutine(CooldownThrusters());
+        }
+        else if(_thrusterCoolDown > 0f && _isThrusterActive)
+        {
+            _thrusterCoolDown -= 3.0f * Time.deltaTime;
+            if(_thrusterCoolDown < 0)
+            {
+                _thrusterCoolDown = 0;
+            }
+            _uiManager.UpdateThrusters(_thrusterCoolDown);
+        }
+        
         CalculateMovement();
 
         if(Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
@@ -97,9 +116,12 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && _isThrusterActive)
         {
             transform.Translate(direction * _speed * 2 * Time.deltaTime);
+            _thrusterCoolDown += 20.0f * Time.deltaTime;
+            _uiManager.UpdateThrusters(_thrusterCoolDown);
+
         }
         else
         {
@@ -295,5 +317,16 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         _isMultiDirectionalShotActive = false;
+    }
+
+    IEnumerator CooldownThrusters()
+    {
+        while(_thrusterCoolDown > 0)
+        {
+            _thrusterCoolDown -= 1.0f;
+            _uiManager.UpdateThrusters(_thrusterCoolDown);
+            yield return new WaitForSeconds(0.05f);
+        }
+        _isThrusterActive = true;
     }
 }

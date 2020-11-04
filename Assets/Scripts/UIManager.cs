@@ -14,11 +14,14 @@ public class UIManager : MonoBehaviour
     private Image _livesImg;
     [SerializeField]
     private Sprite[] _liveSprites;
-
     [SerializeField]
     private GameObject _gameOverText;
     [SerializeField]
     private GameObject _restartText;
+
+    [SerializeField]
+    private GameObject _thrusterBar;
+    private Image _thrusterBarImage;
 
     private GameManager _gameManager;
     // Start is called before the first frame update
@@ -29,6 +32,7 @@ public class UIManager : MonoBehaviour
         _gameOverText.SetActive(false);
         _restartText.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+        _thrusterBarImage = _thrusterBar.GetComponent<Image>();
         if(_gameManager == null)
         {
             Debug.LogError("_gameManager is NULL.");
@@ -39,6 +43,11 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void UpdateThrusters(float amount)
+    {
+        _thrusterBarImage.fillAmount = amount / 100f;
     }
 
     public void ChangeAmmo(int ammo)
