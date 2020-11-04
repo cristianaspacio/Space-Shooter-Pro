@@ -56,11 +56,11 @@ public class SpawnManager : MonoBehaviour
             Vector3 spawnPoint = new Vector3(Random.Range(-9.0f, 9.0f), 8, 0);
             if(Random.value > 0.8f)
             {
-                Instantiate(_powerups[5], spawnPoint, Quaternion.identity);
+                Instantiate(_powerups[6], spawnPoint, Quaternion.identity);
             }
             else
             {
-                int randomPowerup = Random.Range(0, 5);
+                int randomPowerup = Random.Range(0, 6);
                 Instantiate(_powerups[randomPowerup], spawnPoint, Quaternion.identity);
             }
             yield return new WaitForSeconds(Random.Range(3.0f, 7.0f));

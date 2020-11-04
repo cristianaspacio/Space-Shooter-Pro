@@ -351,4 +351,16 @@ public class Player : MonoBehaviour
         }
         _mainCamera.transform.position = initialPosition;
     }
+
+    public void NegativePowerupActive()
+    {
+        _speed *= 0.5f;
+        StartCoroutine(NegativePowerupDuration());
+    }
+
+    IEnumerator NegativePowerupDuration()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _speed *= 2f;
+    }
 }

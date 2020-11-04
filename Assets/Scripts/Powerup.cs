@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Powerup : MonoBehaviour
@@ -53,6 +54,9 @@ public class Powerup : MonoBehaviour
                         player.HealthPickUp();
                         break;
                     case 5:
+                        player.NegativePowerupActive();
+                        break;
+                    case 6:
                         player.MultiShotActive();
                         break;
                     default:
