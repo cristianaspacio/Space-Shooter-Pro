@@ -261,14 +261,7 @@ public class Player : MonoBehaviour
         _uiManager.ChangeScore(_score);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.tag == "Enemy_Laser")
-        {
-            Destroy(collision.gameObject);
-            Damage();
-        }
-    }
+    
 
     private void DamageShield()
     {

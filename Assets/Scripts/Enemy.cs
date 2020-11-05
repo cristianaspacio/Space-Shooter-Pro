@@ -18,6 +18,11 @@ public class Enemy : MonoBehaviour
     private Animator _anim;
 
     private AudioSource _audioSource;
+
+    [SerializeField]
+    private bool _isUnique = false;
+    [SerializeField]
+    private GameObject[] _uniqueEnemyLasers;
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
@@ -43,8 +48,16 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ShootLaser();
-        CalculateMovement();
+        if (_isUnique)
+        {
+            UniqueLaser();
+            UniqueMovement();
+        }
+        else
+        {
+            ShootLaser();
+            CalculateMovement();
+        }
     }
 
     private void CalculateMovement()
@@ -129,4 +142,55 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void SetUnique()
+    {
+        _isUnique = true;
+    }
+
+    private void UniqueLaser()
+    {
+        if (Time.time > _canFire && _canShootLaser)
+        {
+            _fireRate = Random.Range(3f, 7f);
+            _canFire = Time.time + _fireRate;
+            int angle = 0;
+            for(int i = 0; i < 4; i ++)
+            {
+                _uniqueEnemyLasers[i] = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(new Vector3(0,0, angle+290.0f)));
+                Laser[] lasers = _uniqueEnemyLasers[i].GetComponentsInChildren<Laser>();
+                for (int j = 0; j < 2; j++)
+                {
+                    lasers[j].AssignEnemyLaser();
+                }
+                angle += 45;
+            }
+            
+        }
+    }
+
+    private void UniqueMovement()
+    {
+        if (_moveRight)
+        {
+            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        }
+
+        if (transform.position.x <= -9.0f)
+        {
+            _moveRight = true;
+        }
+        else if (transform.position.x >= 9.0f)
+        {
+            _moveRight = false;
+        }
+
+        if(transform.position.y >= 2)
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+    }
 }

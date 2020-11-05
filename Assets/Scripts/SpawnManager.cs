@@ -42,6 +42,10 @@ public class SpawnManager : MonoBehaviour
                 float randomX = Random.Range(-9.0f, 9.0f);
                 GameObject newEnemy = Instantiate(_enemyPrefab, new Vector3(randomX, 8, 0), Quaternion.identity);
                 newEnemy.transform.parent = _enemyContainer.transform;
+                if(Random.value > 0.8f)
+                {
+                    newEnemy.GetComponent<Enemy>().SetUnique();
+                }
             }
             yield return new WaitForSeconds(5.0f);
 

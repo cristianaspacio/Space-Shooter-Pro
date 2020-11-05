@@ -52,6 +52,7 @@ public class Laser : MonoBehaviour
     public void AssignEnemyLaser()
     {
         _isEnemyLaser = true;
+        this.tag = "Enemy_Laser";
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
