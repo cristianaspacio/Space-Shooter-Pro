@@ -23,6 +23,10 @@ public class Enemy : MonoBehaviour
     private bool _isUnique = false;
     [SerializeField]
     private GameObject[] _uniqueEnemyLasers;
+
+    private bool _isShieldActive = false;
+    [SerializeField]
+    private GameObject _shieldPrefab;
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
@@ -101,12 +105,20 @@ public class Enemy : MonoBehaviour
             {
                 player.Damage();
             }
-            _anim.SetTrigger("OnEnemyDeath");
-            _audioSource.Play();
-            _speed = 0f;
-            _canShootLaser = false;
-            Destroy(this.GetComponent<BoxCollider2D>());
-            Destroy(this.gameObject, 2.8f);
+
+            if (_isShieldActive == true)
+            {
+                DamageShield();
+            }
+            else
+            {
+                _anim.SetTrigger("OnEnemyDeath");
+                _audioSource.Play();
+                _speed = 0f;
+                _canShootLaser = false;
+                Destroy(this.GetComponent<BoxCollider2D>());
+                Destroy(this.gameObject, 2.8f);
+            }
 
         }
 
@@ -116,13 +128,22 @@ public class Enemy : MonoBehaviour
             {
                 _player.AddScore(10);
             }
-            _anim.SetTrigger("OnEnemyDeath");
-            Destroy(other.gameObject);
-            _audioSource.Play();
-            _speed = 0f;
-            Destroy(this.GetComponent<BoxCollider2D>());
-            _canShootLaser = false;
-            Destroy(this.gameObject, 2.8f);
+
+            if(_isShieldActive == true)
+            {
+                DamageShield();
+                Destroy(other.gameObject);
+            }
+            else
+            {
+                _anim.SetTrigger("OnEnemyDeath");
+                Destroy(other.gameObject);
+                _audioSource.Play();
+                _speed = 0f;
+                Destroy(this.GetComponent<BoxCollider2D>());
+                _canShootLaser = false;
+                Destroy(this.gameObject, 2.8f);
+            }
         }
     }
 
@@ -192,5 +213,17 @@ public class Enemy : MonoBehaviour
         {
             transform.Translate(Vector3.down * _speed * Time.deltaTime);
         }
+    }
+
+    private void DamageShield()
+    {
+        _isShieldActive = false;
+        _shieldPrefab.SetActive(false);
+    }
+
+    public void SetShield()
+    {
+        _isShieldActive = true;
+        _shieldPrefab.SetActive(true);
     }
 }

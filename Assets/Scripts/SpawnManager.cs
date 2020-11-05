@@ -39,12 +39,17 @@ public class SpawnManager : MonoBehaviour
         {
             for(int i = 0; i < _waveNumber; i++)
             {
+                float rand = Random.value;
                 float randomX = Random.Range(-9.0f, 9.0f);
                 GameObject newEnemy = Instantiate(_enemyPrefab, new Vector3(randomX, 8, 0), Quaternion.identity);
                 newEnemy.transform.parent = _enemyContainer.transform;
-                if(Random.value > 0.8f)
+                if(rand > 0.8f)
                 {
                     newEnemy.GetComponent<Enemy>().SetUnique();
+                }
+                else if(rand > 0.6f)
+                {
+                    newEnemy.GetComponent<Enemy>().SetShield();
                 }
             }
             yield return new WaitForSeconds(5.0f);
@@ -69,7 +74,7 @@ public class SpawnManager : MonoBehaviour
             }
             else if(rand > 0.6f)
             {
-                Instantiate(_powerups[5], spawnPoint, Quaternion.identity);
+                Instantiate(_powerups[5], spawnPoint, Quaternion.identity); 
             }
             else if(rand > 0.5f)
             {
