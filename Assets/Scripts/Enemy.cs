@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     private float _speed = 2.0f;
     private float _fireRate = 3.0f;
     private float _canFire = -1f;
+    private GameObject _playerObject;
     private Player _player;
     [SerializeField]
     private GameObject _laserPrefab;
@@ -29,7 +30,8 @@ public class Enemy : MonoBehaviour
     private GameObject _shieldPrefab;
     void Start()
     {
-        _player = GameObject.Find("Player").GetComponent<Player>();
+        _playerObject = GameObject.Find("Player");
+        _player = _playerObject.GetComponent<Player>();
         _audioSource = GetComponent<AudioSource>();
         _canShootLaser = true;
         if(_audioSource == null)
@@ -56,6 +58,10 @@ public class Enemy : MonoBehaviour
         {
             UniqueLaser();
             UniqueMovement();
+        }
+        else if(_playerObject != null && Vector3.Distance(_playerObject.transform.position, transform.position) <= 3.0f)
+        {
+            MoveTowardsPlayer();
         }
         else
         {
@@ -225,5 +231,10 @@ public class Enemy : MonoBehaviour
     {
         _isShieldActive = true;
         _shieldPrefab.SetActive(true);
+    }
+
+    private void MoveTowardsPlayer()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, _playerObject.transform.position, _speed * Time.deltaTime);
     }
 }
