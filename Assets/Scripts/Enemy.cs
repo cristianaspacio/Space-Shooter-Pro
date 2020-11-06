@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() 
     {
         if (_isUnique)
         {
@@ -157,14 +157,23 @@ public class Enemy : MonoBehaviour
     {
         if (Time.time > _canFire && _canShootLaser)
         {
+            GameObject enemyLaser;
             _fireRate = Random.Range(3f, 7f);
             _canFire = Time.time + _fireRate;
-            GameObject enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            float dist = _playerObject.transform.position.x - transform.position.x;
+            if(dist <= 2 && _playerObject.transform.position.y > transform.position.y)
+            {
+                enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(0,0,180));
+            }
+            else
+            {
+                enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            }
+
             Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
             for (int i = 0; i < 2; i++)
             {
                 lasers[i].AssignEnemyLaser();
-
             }
         }
     }
