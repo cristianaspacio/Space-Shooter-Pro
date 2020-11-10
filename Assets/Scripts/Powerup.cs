@@ -12,15 +12,30 @@ public class Powerup : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField]
     private AudioClip _audioClip;
+
+    [SerializeField]
+    GameObject _player;
     void Start()
     {
-       
+        _player = GameObject.Find("Player");
+        if(_player == null)
+        {
+            Debug.LogError("Player is null.");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        if(Input.GetKey(KeyCode.C))
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _speed * Time.deltaTime * 2);
+        }
+        else
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+
         if(transform.position.y <= -7.0f)
         {
             Destroy(this.gameObject);
