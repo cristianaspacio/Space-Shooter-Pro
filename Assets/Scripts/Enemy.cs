@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -22,12 +23,13 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     private bool _isUnique = false;
-    [SerializeField]
-    private GameObject[] _uniqueEnemyLasers;
+    
 
     private bool _isShieldActive = false;
     [SerializeField]
     private GameObject _shieldPrefab;
+
+    private bool _canShootAtPowerup = true;
     void Start()
     {
         _playerObject = GameObject.Find("Player");
@@ -54,6 +56,12 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update() 
     {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Powerup"));
+       
+        if(hit.collider != null)
+        {
+            StartCoroutine(ShootatPowerUp());
+        }
         if (_isUnique)
         {
             UniqueLaser();
@@ -155,12 +163,12 @@ public class Enemy : MonoBehaviour
 
     private void ShootLaser()
     {
-        if (Time.time > _canFire && _canShootLaser)
+        if (Time.time > _canFire && _canShootLaser && _playerObject != null)
         {
             GameObject enemyLaser;
             _fireRate = Random.Range(3f, 7f);
             _canFire = Time.time + _fireRate;
-            float dist = _playerObject.transform.position.x - transform.position.x;
+            float dist = Mathf.Abs(_playerObject.transform.position.x - transform.position.x);
             if(dist <= 2 && _playerObject.transform.position.y > transform.position.y)
             {
                 enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(0,0,180));
@@ -176,6 +184,7 @@ public class Enemy : MonoBehaviour
                 lasers[i].AssignEnemyLaser();
             }
         }
+       
     }
 
     public void SetUnique()
@@ -185,15 +194,16 @@ public class Enemy : MonoBehaviour
 
     private void UniqueLaser()
     {
-        if (Time.time > _canFire && _canShootLaser)
+        if (Time.time > _canFire && _canShootLaser && _playerObject != null)
         {
+            GameObject enemyLaser;
             _fireRate = Random.Range(3f, 7f);
             _canFire = Time.time + _fireRate;
             int angle = 0;
-            for(int i = 0; i < 4; i ++)
+            for(int i = 0; i < 5; i ++)
             {
-                _uniqueEnemyLasers[i] = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(new Vector3(0,0, angle+290.0f)));
-                Laser[] lasers = _uniqueEnemyLasers[i].GetComponentsInChildren<Laser>();
+                enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(0,0, angle-90));
+                Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
                 for (int j = 0; j < 2; j++)
                 {
                     lasers[j].AssignEnemyLaser();
@@ -245,5 +255,21 @@ public class Enemy : MonoBehaviour
     private void MoveTowardsPlayer()
     {
         transform.position = Vector3.MoveTowards(transform.position, _playerObject.transform.position, _speed * Time.deltaTime);
+    }
+
+    private IEnumerator ShootatPowerUp()
+    {
+        if(_canShootAtPowerup)
+        {
+            GameObject enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+            for (int i = 0; i < 2; i++)
+            {
+                lasers[i].AssignEnemyLaser();
+            }
+            _canShootAtPowerup = false;
+            yield return new WaitForSeconds(1.0f);
+            _canShootAtPowerup = true;
+        }
     }
 }

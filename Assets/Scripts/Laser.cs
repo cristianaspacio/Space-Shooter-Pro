@@ -53,6 +53,7 @@ public class Laser : MonoBehaviour
     {
         _isEnemyLaser = true;
         this.tag = "Enemy_Laser";
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -62,7 +63,10 @@ public class Laser : MonoBehaviour
             collision.GetComponent<Player>().Damage();
             Destroy(gameObject);
         }
-
+        if(collision.tag == "Powerup" && _isEnemyLaser)
+        {
+            Destroy(gameObject);
+        }
 
     }
     
