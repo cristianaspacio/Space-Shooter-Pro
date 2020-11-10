@@ -51,6 +51,10 @@ public class SpawnManager : MonoBehaviour
                 {
                     newEnemy.GetComponent<Enemy>().SetShield();
                 }
+                else if(rand > 0.5f)
+                {
+                    newEnemy.GetComponent<Enemy>().SetAvoid();
+                }
             }
             yield return new WaitForSeconds(5.0f);
 

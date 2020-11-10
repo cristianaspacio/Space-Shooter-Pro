@@ -6,7 +6,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 2.0f;
+    private float _speed = 3.0f;
     private float _fireRate = 3.0f;
     private float _canFire = -1f;
     private GameObject _playerObject;
@@ -30,6 +30,8 @@ public class Enemy : MonoBehaviour
     private GameObject _shieldPrefab;
 
     private bool _canShootAtPowerup = true;
+    private bool _avoidingLaser = false;
+    private bool _avoidEnemyType = false;
     void Start()
     {
         _playerObject = GameObject.Find("Player");
@@ -57,8 +59,12 @@ public class Enemy : MonoBehaviour
     void Update() 
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Powerup"));
-       
-        if(hit.collider != null)
+
+        if(_avoidEnemyType == true)
+        {
+            AvoidLasers();
+        }
+        if (hit.collider != null)
         {
             StartCoroutine(ShootatPowerUp());
         }
@@ -74,7 +80,11 @@ public class Enemy : MonoBehaviour
         else
         {
             ShootLaser();
-            CalculateMovement();
+            if(_avoidingLaser == false)
+            {
+                CalculateMovement();
+            }
+            _avoidingLaser = false;
         }
     }
 
@@ -271,5 +281,24 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
             _canShootAtPowerup = true;
         }
+    }
+
+    private void AvoidLasers()
+    {
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 2.5f);
+        foreach (var hitCollider in hitColliders)
+        {
+            Debug.Log("Here");
+            if (hitCollider.tag == "Laser")
+            {
+                _avoidingLaser = true;
+                transform.position = Vector3.MoveTowards(transform.position, hitCollider.transform.position, -1 * _speed * Time.deltaTime);
+            }
+        }
+    }
+
+    public void SetAvoid()
+    {
+        _avoidEnemyType = true;
     }
 }
