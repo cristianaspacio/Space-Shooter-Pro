@@ -288,7 +288,6 @@ public class Enemy : MonoBehaviour
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 2.5f);
         foreach (var hitCollider in hitColliders)
         {
-            Debug.Log("Here");
             if (hitCollider.tag == "Laser")
             {
                 _avoidingLaser = true;

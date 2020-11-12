@@ -8,10 +8,16 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private float _speed = 8.0f;
     private bool _isEnemyLaser;
+    private bool _isHoming = false;
+    private GameObject _target = null;
     // Update is called once per frame
     void Update()
     {
-        if(_isEnemyLaser == false)
+        if (_isHoming == true && _target != null)
+        {
+            MoveTowardsTarget();
+        }
+        else if (_isEnemyLaser == false)
         {
             MoveUp();
         }
@@ -49,6 +55,23 @@ public class Laser : MonoBehaviour
         }
     }
 
+    private void MoveTowardsTarget()
+    {
+        if(_target != null)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
+        }
+        else
+        {
+            FindClosestTarget("Enemy");
+        }
+        
+        if(_target.GetComponent<Collider2D>() == null)
+        {
+            _target = null;
+        }
+    }
+
     public void AssignEnemyLaser()
     {
         _isEnemyLaser = true;
@@ -69,6 +92,36 @@ public class Laser : MonoBehaviour
         }
 
     }
-    
-    
+
+    private void OnBecameInvisible()
+    {
+        if (transform.parent != null)
+        {
+            Destroy(transform.parent.gameObject);
+        }
+        Destroy(gameObject);
+    }
+
+    public void SetHomingActive(string targetName)
+    {
+        _isHoming = true;
+        FindClosestTarget(targetName);
+    }
+
+    private void FindClosestTarget(string targetName)
+    {
+        GameObject[] potentialTargets;
+        potentialTargets = GameObject.FindGameObjectsWithTag(targetName);
+        float distance = Mathf.Infinity;
+        foreach (GameObject potentialTarget in potentialTargets)
+        {
+            Vector3 diff = potentialTarget.transform.position - transform.position;
+            float curDistance = diff.sqrMagnitude;
+            if(curDistance < distance)
+            {
+                _target = potentialTarget;
+                distance = curDistance;
+            }
+        }
+    }
 }

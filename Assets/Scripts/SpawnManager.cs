@@ -70,7 +70,14 @@ public class SpawnManager : MonoBehaviour
             Vector3 spawnPoint = new Vector3(Random.Range(-9.0f, 9.0f), 8, 0);
             if(rand > 0.8f)
             {
-                Instantiate(_powerups[6], spawnPoint, Quaternion.identity);
+                if(Random.value > 0.5f)
+                {
+                    Instantiate(_powerups[6], spawnPoint, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(_powerups[7], spawnPoint, Quaternion.identity);
+                }
             }
             else if(rand > 0.7f)
             {

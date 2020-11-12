@@ -74,6 +74,9 @@ public class Powerup : MonoBehaviour
                     case 6:
                         player.MultiShotActive();
                         break;
+                    case 7:
+                        player.HomingProjectileActive();
+                        break;
                     default:
                         break;
                 }

@@ -58,6 +58,9 @@ public class Player : MonoBehaviour
     private float _shakeTime = 0.5f;
     [SerializeField]
     private Camera _mainCamera;
+
+    [SerializeField]
+    private bool _isHomingActive = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -155,6 +158,16 @@ public class Player : MonoBehaviour
         {
             _ammoCount--;
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            _audioSource.Play();
+            _uiManager.ChangeAmmo(_ammoCount);
+        }
+        else if(_isHomingActive && _ammoCount > 0)
+        {
+            _ammoCount--;
+
+            GameObject homing = Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+            homing.GetComponent<Laser>().SetHomingActive("Enemy");
+
             _audioSource.Play();
             _uiManager.ChangeAmmo(_ammoCount);
         }
@@ -356,4 +369,19 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         _speed *= 2f;
     }
+
+    public void HomingProjectileActive()
+    {
+        _isMultiDirectionalShotActive = false;
+        _isTripleShotActive = false;
+        _isHomingActive = true;
+        StartCoroutine(HomingPowerDown());
+    }
+
+    IEnumerator HomingPowerDown()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _isHomingActive = false;
+    }
+
 }
