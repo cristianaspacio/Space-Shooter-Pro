@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour
     private bool _canShootAtPowerup = true;
     private bool _avoidingLaser = false;
     private bool _avoidEnemyType = false;
+    private bool _isAlive = true;
     void Start()
     {
         _playerObject = GameObject.Find("Player");
@@ -136,6 +137,7 @@ public class Enemy : MonoBehaviour
             }
             else
             {
+                _isAlive = false;
                 _anim.SetTrigger("OnEnemyDeath");
                 _audioSource.Play();
                 _speed = 0f;
@@ -160,6 +162,7 @@ public class Enemy : MonoBehaviour
             }
             else
             {
+                _isAlive = false;
                 _anim.SetTrigger("OnEnemyDeath");
                 Destroy(other.gameObject);
                 _audioSource.Play();
@@ -269,7 +272,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator ShootatPowerUp()
     {
-        if(_canShootAtPowerup)
+        if(_canShootAtPowerup && _isAlive)
         {
             GameObject enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
             Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();

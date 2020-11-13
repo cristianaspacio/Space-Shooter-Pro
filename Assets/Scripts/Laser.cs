@@ -10,12 +10,18 @@ public class Laser : MonoBehaviour
     private bool _isEnemyLaser;
     private bool _isHoming = false;
     private GameObject _target = null;
+    private bool _bossLaser = false;
+    private Vector2 _dir;
     // Update is called once per frame
     void Update()
     {
         if (_isHoming == true && _target != null)
         {
             MoveTowardsTarget();
+        }
+        else if(_bossLaser == true)
+        {
+            MoveDir();
         }
         else if (_isEnemyLaser == false)
         {
@@ -123,5 +129,16 @@ public class Laser : MonoBehaviour
                 distance = curDistance;
             }
         }
+    }
+
+    private void MoveDir()
+    {
+        transform.Translate(_dir * _speed * Time.deltaTime);
+    }
+
+    public void SetDir(Vector2 dir)
+    {
+        _dir = dir;
+        _bossLaser = true;
     }
 }

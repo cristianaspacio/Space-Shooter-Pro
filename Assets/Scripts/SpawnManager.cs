@@ -10,9 +10,13 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] _powerups;
+    [SerializeField]
     private int _waveNumber = 1;
 
     private bool _stopSpawning = false;
+
+    [SerializeField]
+    private GameObject _bossPrefab;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,9 +59,10 @@ public class SpawnManager : MonoBehaviour
                 {
                     newEnemy.GetComponent<Enemy>().SetAvoid();
                 }
+
             }
             yield return new WaitForSeconds(5.0f);
-
+            
         }
     }
 
@@ -112,6 +117,17 @@ public class SpawnManager : MonoBehaviour
         {
             yield return new WaitForSeconds(20.0f);
             _waveNumber++;
+            if(_waveNumber >= 3)
+            {
+                _stopSpawning = true;
+                BossEncounter();
+            }
         }
+    }
+
+    private void BossEncounter()
+    {
+        GameObject boss = Instantiate(_bossPrefab, new Vector3(0, 8, 0), Quaternion.identity);
+        boss.transform.parent = _enemyContainer.transform;
     }
 }
